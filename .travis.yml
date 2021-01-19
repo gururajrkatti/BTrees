@@ -75,6 +75,53 @@ jobs:
       os: osx
       language: generic
       env: TERRYFY_PYTHON='macpython 3.8.0'
+# Power jobs
+    - name: Python 2.7 for ppc64le
+      arch: ppc64le
+      python: 2.7
+    - name: Python 3.5 for ppc64le
+      arch: ppc64le
+      python: 3.5
+    - name: Python 3.6 for ppc64le
+      arch: ppc64le
+      python: 3.6
+    - name: Python 3.7 for ppc64le
+      python: 3.7
+      arch: ppc64le
+    - name: Python 3.8 for ppc64le
+      python: 3.8
+      arch: ppc64le
+    - name: Documentation
+      python: 3.8
+      arch: ppc64le
+      install:
+        - pip install -U -e .[docs]
+      script:
+        - sphinx-build -b html -d docs/_build/doctrees docs docs/_build/html
+        - sphinx-build -b doctest -d docs/_build/doctrees docs docs/_build/doctest
+      after_success:
+
+    # Special ppc64le builds
+    - name: "Python: 2.7, pure (no C extensions)"
+      python: 2.7
+      arch: ppc64le
+      env: PURE_PYTHON=1
+    - name: "Python: 3.8, pure (no C extensions), with coverage, strict IRO"
+      python: 3.8
+      arch: ppc64le
+      env: PURE_PYTHON=1 WITH_COVERAGE=1 ZOPE_INTERFACE_STRICT_IRO=1
+    - name: "Python: 3.8, with coverage, strict IRO"
+      python: 3.8
+      arch: ppc64le
+      env: WITH_COVERAGE=1 ZOPE_INTERFACE_STRICT_IRO=1
+
+    # manylinux wheel builds
+    - name: 64-bit manylinux wheels (all Pythons)
+      arch: ppc64le
+      services: docker
+      env: DOCKER_IMAGE=quay.io/pypa/manylinux2014_ppc64le
+      install: docker pull $DOCKER_IMAGE
+      script: bash .manylinux.sh
 
 before_install:
   - |
